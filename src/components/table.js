@@ -11,6 +11,8 @@ const DataTable = () => {
     const [sortColumn, setSortColumn] = useState(null); // Column to sort
     const [sortDirection, setSortDirection] = useState('asc'); // Direction of sorting ('asc' or 'desc')
     const [searchTerm, setSearchTerm] = useState(''); // Search term for filtering data
+    const [selectedColumns, setSelectedColumns] = useState(columns.map(col => ({ name: col.name, visible: true }))); // To manage visible columns
+    const [dialogOpen, setDialogOpen] = useState(false); // State to manage the visibility of the column selection dialog
 
     // Filter the data based on Employee Name or Employee ID
     const filteredData = data.filter((row) => {
@@ -68,14 +70,28 @@ const DataTable = () => {
     // Handle clear search
     const handleClearSearch = () => {
         setSearchTerm(''); // Clear the search input
-        setCurrentPage(1)
+        setCurrentPage(1); // Reset to the first page when search is cleared
+    };
+
+    // Toggle column visibility
+    const handleColumnToggle = (columnName) => {
+        setSelectedColumns((prevColumns) =>
+            prevColumns.map((col) =>
+                col.name === columnName ? { ...col, visible: !col.visible } : col
+            )
+        );
+    };
+
+    // Toggle the column selection dialog
+    const toggleDialog = () => {
+        setDialogOpen(!dialogOpen);
     };
 
     return (
         <>
             <h2>Employee Table</h2>
 
-            {/* Search Bar */}
+            {/* Search Bar and Dialog Button */}
             <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
                 <input
                     type="text"
@@ -101,60 +117,131 @@ const DataTable = () => {
                 >
                     Clear
                 </button>
+                <button
+                    onClick={toggleDialog}
+                    style={{
+                        padding: '8px 12px',
+                        backgroundColor: '#4CAF50',
+                        color: 'white',
+                        border: 'none',
+                        cursor: 'pointer',
+                        marginLeft: '10px',
+                    }}
+                >
+                    Select Columns
+                </button>
             </div>
+
+            {/* Column Selection Dialog */}
+            {dialogOpen && (
+                <div
+                    style={{
+                        position: 'fixed',
+                        top: '0',
+                        left: '0',
+                        width: '100%',
+                        height: '100%',
+                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                    }}
+                >
+                    <div
+                        style={{
+                            backgroundColor: 'white',
+                            padding: '20px',
+                            borderRadius: '8px',
+                            width: '300px',
+                            maxHeight: '400px',
+                            overflowY: 'auto',
+                        }}
+                    >
+                        <h3>Select Columns to Display</h3>
+                        <div>
+                            {columns.slice(1).map((col) => (
+                                <div key={col.name}>
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedColumns.find((column) => column.name === col.name)?.visible}
+                                        onChange={() => handleColumnToggle(col.name)}
+                                    />
+                                    <label>{col.name}</label>
+                                </div>
+                            ))}
+                        </div>
+                        <button
+                            onClick={toggleDialog}
+                            style={{
+                                marginTop: '10px',
+                                padding: '8px 12px',
+                                backgroundColor: '#f44336',
+                                color: 'white',
+                                border: 'none',
+                                cursor: 'pointer',
+                            }}
+                        >
+                            Close
+                        </button>
+                    </div>
+                </div>
+            )}
 
             <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
                 <table border="1" cellPadding="8" style={{ tableLayout: 'auto', width: '100%' }}>
                     <thead>
                         <tr>
-                            {columns.map((col, index) => (
-                                <th
-                                    key={index}
-                                    style={{
-                                        minWidth: '130px',
-                                        padding: '5px',
-                                        position: index === 0 ? 'sticky' : 'static',
-                                        left: index === 0 ? 0 : 'auto',
-                                        background: index === 0 ? '#fff' : 'transparent',
-                                        zIndex: index === 0 ? 1 : 'auto',
-                                    }}
-                                >
-                                    {col.sortable ? (
-                                        <>
-                                            {col.name}
-                                            <button
-                                                style={{ cursor: 'pointer', padding: '5px' }}
-                                                onClick={() => handleSort(col.name)}
-                                            >
-                                                {col.name}
-                                                {sortColumn === col.name && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
-                                            </button>
-                                        </>
-                                    ) : (
-                                        col.name
-                                    )}
-                                </th>
-                            ))}
+                            {columns.map(
+                                (col, index) =>
+                                    index === 0 || selectedColumns.find((column) => column.name === col.name && column.visible) ? (
+                                        <th
+                                            key={index}
+                                            style={{
+                                                minWidth: '130px',
+                                                padding: '5px',
+                                                position: index === 0 ? 'sticky' : 'static',
+                                                left: index === 0 ? 0 : 'auto',
+                                                background: index === 0 ? '#fff' : 'transparent',
+                                                zIndex: index === 0 ? 1 : 'auto',
+                                            }}
+                                        >
+                                            {col.sortable ? (
+                                                <button
+                                                    style={{ cursor: 'pointer', padding: '5px' }}
+                                                    onClick={() => handleSort(col.name)}
+                                                >
+                                                    {col.name}
+                                                    {sortColumn === col.name && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
+                                                </button>
+                                            ) : (
+                                                col.name
+                                            )}
+                                        </th>
+                                    ) : null
+                            )}
                         </tr>
                     </thead>
                     <tbody>
                         {currentPageData.map((row, rowIndex) => (
                             <tr key={rowIndex}>
-                                {columns.map((col, colIndex) => (
-                                    <td
-                                        key={colIndex}
-                                        style={{
-                                            minWidth: '130px',
-                                            padding: '5px',
-                                            position: colIndex === 0 ? 'sticky' : 'static',
-                                            left: colIndex === 0 ? 0 : 'auto',
-                                            background: colIndex === 0 ? '#fff' : 'transparent',
-                                            zIndex: colIndex === 0 ? 1 : 'auto',
-                                        }}
-                                    >
-                                        {row[col.name] !== undefined ? row[col.name] : ''}
-                                    </td>
-                                ))}
+                                {columns.map(
+                                    (col, colIndex) =>
+                                        (colIndex === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
+                                            <td
+                                                key={colIndex}
+                                                style={{
+                                                    minWidth: '130px',
+                                                    padding: '5px',
+                                                    position: colIndex === 0 ? 'sticky' : 'static',
+                                                    left: colIndex === 0 ? 0 : 'auto',
+                                                    background: colIndex === 0 ? '#fff' : 'transparent',
+                                                    zIndex: colIndex === 0 ? 1 : 'auto',
+                                                }}
+                                            >
+                                                {row[col.name] !== undefined ? row[col.name] : ''}
+                                            </td>
+                                        )
+                                )}
                             </tr>
                         ))}
                     </tbody>
@@ -163,7 +250,6 @@ const DataTable = () => {
 
             {/* Pagination controls */}
             <div style={{ marginTop: '10px' }}>
-                {/* Entries per page selection */}
                 <label htmlFor="entriesPerPage">Entries per page: </label>
                 <select
                     id="entriesPerPage"
