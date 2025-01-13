@@ -88,6 +88,15 @@ const DataTable = () => {
         setDialogOpen(!dialogOpen);
     };
 
+    const getRandomColor = () => {
+        const colors = [
+            'bg-blue-500', 'bg-green-500', 'bg-red-500', 'bg-yellow-500',
+            'bg-purple-500', 'bg-pink-500', 'bg-teal-500', 'bg-indigo-500'
+        ];
+        const randomIndex = Math.floor(Math.random() * colors.length);
+        return colors[randomIndex];
+    };
+
     return (
         <>
             <h2>Employee Table</h2>
@@ -143,7 +152,7 @@ const DataTable = () => {
             )}
 
             <div className="overflow-x-auto max-w-full">
-                <table className="table-auto w-full border-collapse border border-gray-300">
+                <table className="table-auto w-full border-collapse border border-gray-300 text-sm">
                     <thead>
                         <tr>
                             {columns.map(
@@ -151,7 +160,7 @@ const DataTable = () => {
                                     (index === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                         <th
                                             key={index}
-                                            className={`min-w-[130px] p-1 border border-gray-300 ${index === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
+                                            className={`min-w-[130px]  p-1 border border-gray-300 ${index === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
                                         >
                                             {col.sortable ? (
                                                 <>
@@ -179,15 +188,27 @@ const DataTable = () => {
                                         (colIndex === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                             <td
                                                 key={colIndex}
-                                                className={`min-w-[130px] p-1 border border-gray-300 ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
+                                                className={` ${col.name === "Employee Name" ? 'min-w-[200px]' : 'min-w-[160px]'} p-1 border border-gray-300 ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
                                             >
-                                                {row[col.name] !== undefined ? row[col.name] : ''}
+                                                {col.name === "Employee Name" ? (
+                                                    <div className="flex items-center">
+                                                        <div className={`w-8 h-8 flex items-center justify-center ${getRandomColor()} text-white rounded-full mr-2`}>
+                                                            {/* Display the first letter of the employee's name */}
+                                                            {row['Employee Name'][0].toUpperCase()}
+                                                        </div>
+                                                        {/* Display the full employee name */}
+                                                        {row[col.name]}
+                                                    </div>
+                                                ) : (
+                                                    row[col.name] !== undefined ? row[col.name] : ''
+                                                )}
                                             </td>
                                         )
                                 )}
                             </tr>
                         ))}
                     </tbody>
+
                 </table>
             </div>
 
