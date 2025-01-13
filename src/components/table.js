@@ -5,14 +5,26 @@ const DataTable = () => {
     const columns = tabledata.columns;
     const data = tabledata.data;
 
-    // State to manage pagination and sorting
+    // State to manage pagination, sorting, and search
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage, setEntriesPerPage] = useState(10);
     const [sortColumn, setSortColumn] = useState(null); // Column to sort
     const [sortDirection, setSortDirection] = useState('asc'); // Direction of sorting ('asc' or 'desc')
+    const [searchTerm, setSearchTerm] = useState(''); // Search term for filtering data
 
-    // Sort the entire data set if a column is selected for sorting
-    let sortedData = [...data];
+    // Filter the data based on Employee Name or Employee ID
+    const filteredData = data.filter((row) => {
+        const employeeName = row['Employee Name'].toLowerCase();
+        const employeeId = String(row['Employee ID']);
+        const searchQuery = searchTerm.toLowerCase();
+
+        return (
+            employeeName.includes(searchQuery) || employeeId.includes(searchQuery)
+        );
+    });
+
+    // Sort the filtered data if a column is selected for sorting
+    let sortedData = [...filteredData];
     if (sortColumn !== null) {
         sortedData = sortedData.sort((a, b) => {
             const aValue = a[sortColumn];
@@ -23,10 +35,10 @@ const DataTable = () => {
         });
     }
 
-    // Calculate total pages after sorting
+    // Calculate total pages after sorting and filtering
     const totalPages = Math.ceil(sortedData.length / entriesPerPage);
 
-    // Get the current page's data slice after sorting
+    // Get the current page's data slice after sorting and filtering
     const startIndex = (currentPage - 1) * entriesPerPage;
     const currentPageData = sortedData.slice(startIndex, startIndex + entriesPerPage);
 
@@ -53,9 +65,44 @@ const DataTable = () => {
         }
     };
 
+    // Handle clear search
+    const handleClearSearch = () => {
+        setSearchTerm(''); // Clear the search input
+        setCurrentPage(1)
+    };
+
     return (
         <>
             <h2>Employee Table</h2>
+
+            {/* Search Bar */}
+            <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+                <input
+                    type="text"
+                    placeholder="Search by Employee Name or ID"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                        padding: '8px',
+                        width: '100%',
+                        maxWidth: '400px',
+                        marginRight: '10px',
+                    }}
+                />
+                <button
+                    onClick={handleClearSearch}
+                    style={{
+                        padding: '8px 12px',
+                        backgroundColor: '#f44336',
+                        color: 'white',
+                        border: 'none',
+                        cursor: 'pointer',
+                    }}
+                >
+                    Clear
+                </button>
+            </div>
+
             <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
                 <table border="1" cellPadding="8" style={{ tableLayout: 'auto', width: '100%' }}>
                     <thead>
