@@ -99,12 +99,12 @@ const DataTable = () => {
 
     return (
         <>
-            <h2 className="text-2xl font-bold text-[#00adf2] mt-8 ml-20">Employee Table</h2>
-            <hr className="border-t-1 border-blue-100 mb-8 w-[90%] ml-20" />
+            <h2 className="text-2xl font-bold text-[#00adf2] mt-8 w-[90%] mx-auto">Employee Table</h2>
+            <hr className="border-t-1 border-blue-100 mb-8 w-[90%] mx-auto" />
 
             {/* Search Bar and Dialog Button */}
-            <div className="mb-2 flex items-center mx-20">
-                <div className="relative flex items-center w-full max-w-[600px]">
+            <div className="mb-2 flex items-center w-[90%] mx-auto">
+                <div className="relative flex items-center w-full max-w-[60%]">
                     <input
                         type="text"
                         placeholder="Search by Employee Name or ID"
@@ -163,7 +163,7 @@ const DataTable = () => {
             )}
 
 
-            <div className="overflow-x-auto max-w-full mx-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200" style={{ width: '90%' }}>
+            <div className="overflow-x-auto max-w-full mx-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200 w-[90%]" style={{ width: '90%' }}>
                 <table className="table-auto w-full border-collapse border border-gray-300 text-sm text-gray-800">
                     <thead>
                         <tr>
@@ -226,7 +226,7 @@ const DataTable = () => {
 
 
             {/* Pagination controls */}
-            <div className="my-2.5 flex justify-end items-center space-x-4 text-sm mr-20 text-gray-800">
+            <div className="my-2.5 flex justify-end items-center space-x-4 text-sm mr-20 text-gray-800 mb-20">
                 {/* Entries per page */}
                 <div>
                     <label htmlFor="entriesPerPage" className="mr-4">Entries per page:</label>
