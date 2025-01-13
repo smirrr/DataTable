@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { tabledata } from '../data/mockTableData'; // Assuming you've moved your data to this file
-import { ArrowDownUp, ArrowUpNarrowWide, ArrowUpWideNarrow } from 'lucide-react';
+import { ArrowDownUp, ArrowUpNarrowWide, ArrowUpWideNarrow, CircleChevronLeft, CircleChevronRight, CircleX, X } from 'lucide-react';
 
 const DataTable = () => {
     const columns = tabledata.columns;
@@ -99,57 +99,69 @@ const DataTable = () => {
 
     return (
         <>
-            <h2>Employee Table</h2>
+            <h2 className="text-2xl font-bold text-[#00adf2] mt-8 ml-20">Employee Table</h2>
+            <hr className="border-t-1 border-blue-100 mb-8 w-[90%] ml-20" />
 
             {/* Search Bar and Dialog Button */}
-            <div className="mb-2 flex items-center">
-                <input
-                    type="text"
-                    placeholder="Search by Employee Name or ID"
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="p-2 w-full max-w-[400px] mr-2.5 border border-gray-300"
-                />
-                <button
-                    onClick={handleClearSearch}
-                    className="p-2 px-3 bg-red-500 text-white border-none cursor-pointer"
-                >
-                    Clear
-                </button>
+            <div className="mb-2 flex items-center mx-20">
+                <div className="relative flex items-center w-full max-w-[600px]">
+                    <input
+                        type="text"
+                        placeholder="Search by Employee Name or ID"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="p-2 w-full border border-gray-300 text-sm placeholder:text-sm focus:outline-none focus:ring-1 focus:ring-[#00adf2] rounded-md"
+                    />
+                    <button
+                        onClick={handleClearSearch}
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 bg-white text-[#00adf2] cursor-pointer"
+                    >
+                        <X size={20} color="gray" strokeWidth={2} />
+                    </button>
+                </div>
+
                 <button
                     onClick={toggleDialog}
-                    className="p-2 px-3 bg-green-500 text-white border-none cursor-pointer ml-2.5"
+                    className="p-2 px-3 bg-[#00adf2] text-white border-none cursor-pointer ml-auto rounded-[10px]"
                 >
                     Select Columns
                 </button>
             </div>
 
+
             {/* Column Selection Dialog */}
             {dialogOpen && (
-                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-5 rounded-lg w-[300px] max-h-[400px] overflow-y-auto">
-                        <h3>Select Columns to Display</h3>
-                        <div>
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
+                    <div className="bg-white p-10 rounded-lg w-[450px] max-h-[600px] overflow-y-auto relative z-50">
+                        <h3 className="absolute top-2 left-2 p-2 text-gray-600 font-bold">Select Columns to Display</h3>
+                        {/* Close button */}
+                        <button
+                            onClick={toggleDialog}
+                            className="absolute top-2 right-2 p-2 text-white bg-transparent border-none cursor-pointer"
+                        >
+                            <CircleX size={24} color="#00adf2" strokeWidth={2.5} />
+                        </button>
+
+
+                        <div className='mt-7 flex flex-wrap gap-6'>
                             {columns.slice(1).map((col) => (
-                                <div key={col.name}>
+                                <div key={col.name} className="flex items-center text-gray-800">
                                     <input
                                         type="checkbox"
                                         checked={selectedColumns.find((column) => column.name === col.name)?.visible}
                                         onChange={() => handleColumnToggle(col.name)}
+                                        className="w-4 h-4 text-[#00adf2] border-gray-300 mr-2 checked:bg-[#00adf2] checked:border-[#00adf2]"
                                     />
-                                    <label>{col.name}</label>
+                                    <label className="text-md">{col.name}</label>
+                                    {/* Add a comma except for the last item */}
+                                    {columns.slice(1).indexOf(col) !== columns.slice(1).length - 1 && <span className="mx-1">,</span>}
                                 </div>
                             ))}
                         </div>
-                        <button
-                            onClick={toggleDialog}
-                            className="mt-2 px-4 py-2 bg-red-500 text-white border-none cursor-pointer"
-                        >
-                            Close
-                        </button>
                     </div>
                 </div>
             )}
+
 
             <div className="overflow-x-auto max-w-full mx-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200" style={{ width: '90%' }}>
                 <table className="table-auto w-full border-collapse border border-gray-300 text-sm text-gray-800">
@@ -214,40 +226,44 @@ const DataTable = () => {
 
 
             {/* Pagination controls */}
-            <div className="mt-2.5">
-                <label htmlFor="entriesPerPage">Entries per page: </label>
-                <select
-                    id="entriesPerPage"
-                    value={entriesPerPage}
-                    onChange={handleEntriesPerPageChange}
-                    className="p-2 border border-gray-300"
-                >
-                    <option value={5}>5</option>
-                    <option value={10}>10</option>
-                    <option value={15}>15</option>
-                </select>
+            <div className="my-2.5 flex justify-end items-center space-x-4 text-sm mr-20 text-gray-800">
+                {/* Entries per page */}
+                <div>
+                    <label htmlFor="entriesPerPage" className="mr-4">Entries per page:</label>
+                    <select
+                        id="entriesPerPage"
+                        value={entriesPerPage}
+                        onChange={handleEntriesPerPageChange}
+                        className="p-1 border border-gray-300 text-xs bg-[aecce4]"
+                    >
+                        <option value={5}>5</option>
+                        <option value={10}>10</option>
+                        <option value={15}>15</option>
+                    </select>
+                </div>
 
                 {/* Pagination buttons */}
-                <div className="mt-2.5">
+                <div className="flex items-center space-x-2">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
-                        className="p-2 border border-gray-300 bg-gray-100 cursor-pointer"
+                        className="p-1 cursor-pointer  disabled:opacity-30"
                     >
-                        Previous
+                        <CircleChevronLeft size={16} color="#00adf2" strokeWidth={2.5} />
                     </button>
-                    <span className="mx-2.5">
-                        Page {currentPage} of {totalPages}
+                    <span className="text-xs">
+                        {currentPage} / {totalPages}
                     </span>
                     <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
-                        className="p-2 border border-gray-300 bg-gray-100 cursor-pointer"
+                        className="p-1 cursor-pointer  disabled:opacity-30"
                     >
-                        Next
+                        <CircleChevronRight size={16} color="#00adf2" strokeWidth={2.5} />
                     </button>
                 </div>
             </div>
+
         </>
     );
 };
