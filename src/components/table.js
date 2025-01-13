@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { tabledata } from '../data/mockTableData'; // Assuming you've moved your data to this file
 import { ArrowDownUp, ArrowUpNarrowWide, ArrowUpWideNarrow } from 'lucide-react';
+
 const DataTable = () => {
     const columns = tabledata.columns;
     const data = tabledata.data;
@@ -92,41 +93,23 @@ const DataTable = () => {
             <h2>Employee Table</h2>
 
             {/* Search Bar and Dialog Button */}
-            <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center' }}>
+            <div className="mb-2 flex items-center">
                 <input
                     type="text"
                     placeholder="Search by Employee Name or ID"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    style={{
-                        padding: '8px',
-                        width: '100%',
-                        maxWidth: '400px',
-                        marginRight: '10px',
-                    }}
+                    className="p-2 w-full max-w-[400px] mr-2.5 border border-gray-300"
                 />
                 <button
                     onClick={handleClearSearch}
-                    style={{
-                        padding: '8px 12px',
-                        backgroundColor: '#f44336',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                    }}
+                    className="p-2 px-3 bg-red-500 text-white border-none cursor-pointer"
                 >
                     Clear
                 </button>
                 <button
                     onClick={toggleDialog}
-                    style={{
-                        padding: '8px 12px',
-                        backgroundColor: '#4CAF50',
-                        color: 'white',
-                        border: 'none',
-                        cursor: 'pointer',
-                        marginLeft: '10px',
-                    }}
+                    className="p-2 px-3 bg-green-500 text-white border-none cursor-pointer ml-2.5"
                 >
                     Select Columns
                 </button>
@@ -134,29 +117,8 @@ const DataTable = () => {
 
             {/* Column Selection Dialog */}
             {dialogOpen && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: '0',
-                        left: '0',
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
-                        display: 'flex',
-                        justifyContent: 'center',
-                        alignItems: 'center',
-                    }}
-                >
-                    <div
-                        style={{
-                            backgroundColor: 'white',
-                            padding: '20px',
-                            borderRadius: '8px',
-                            width: '300px',
-                            maxHeight: '400px',
-                            overflowY: 'auto',
-                        }}
-                    >
+                <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-5 rounded-lg w-[300px] max-h-[400px] overflow-y-auto">
                         <h3>Select Columns to Display</h3>
                         <div>
                             {columns.slice(1).map((col) => (
@@ -180,29 +142,22 @@ const DataTable = () => {
                 </div>
             )}
 
-            <div style={{ overflowX: 'auto', maxWidth: '100%' }}>
-                <table border="1" cellPadding="8" style={{ tableLayout: 'auto', width: '100%' }}>
+            <div className="overflow-x-auto max-w-full">
+                <table className="table-auto w-full border-collapse border border-gray-300">
                     <thead>
                         <tr>
                             {columns.map(
                                 (col, index) =>
-                                    index === 0 || selectedColumns.find((column) => column.name === col.name && column.visible) ? (
+                                    (index === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                         <th
                                             key={index}
-                                            style={{
-                                                minWidth: '130px',
-                                                padding: '5px',
-                                                position: index === 0 ? 'sticky' : 'static',
-                                                left: index === 0 ? 0 : 'auto',
-                                                background: index === 0 ? '#fff' : 'transparent',
-                                                zIndex: index === 0 ? 1 : 'auto',
-                                            }}
+                                            className={`min-w-[130px] p-1 border border-gray-300 ${index === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
                                         >
                                             {col.sortable ? (
                                                 <>
                                                     {col.name}
                                                     <button
-                                                        style={{ cursor: 'pointer', padding: '5px', border: 'none', background: 'transparent' }}
+                                                        className="cursor-pointer p-1 border-none bg-transparent"
                                                         onClick={() => handleSort(col.name)}
                                                     >
                                                         {sortColumn === col.name ? (sortDirection === 'asc' ? <ArrowUpNarrowWide size={16} color="blue" /> : <ArrowUpWideNarrow size={16} color="blue" />) : <ArrowDownUp size={16} color="blue" />}
@@ -212,7 +167,7 @@ const DataTable = () => {
                                                 col.name
                                             )}
                                         </th>
-                                    ) : null
+                                    )
                             )}
                         </tr>
                     </thead>
@@ -224,14 +179,7 @@ const DataTable = () => {
                                         (colIndex === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                             <td
                                                 key={colIndex}
-                                                style={{
-                                                    minWidth: '130px',
-                                                    padding: '5px',
-                                                    position: colIndex === 0 ? 'sticky' : 'static',
-                                                    left: colIndex === 0 ? 0 : 'auto',
-                                                    background: colIndex === 0 ? '#fff' : 'transparent',
-                                                    zIndex: colIndex === 0 ? 1 : 'auto',
-                                                }}
+                                                className={`min-w-[130px] p-1 border border-gray-300 ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
                                             >
                                                 {row[col.name] !== undefined ? row[col.name] : ''}
                                             </td>
@@ -244,12 +192,13 @@ const DataTable = () => {
             </div>
 
             {/* Pagination controls */}
-            <div style={{ marginTop: '10px' }}>
+            <div className="mt-2.5">
                 <label htmlFor="entriesPerPage">Entries per page: </label>
                 <select
                     id="entriesPerPage"
                     value={entriesPerPage}
                     onChange={handleEntriesPerPageChange}
+                    className="p-2 border border-gray-300"
                 >
                     <option value={5}>5</option>
                     <option value={10}>10</option>
@@ -257,19 +206,21 @@ const DataTable = () => {
                 </select>
 
                 {/* Pagination buttons */}
-                <div style={{ marginTop: '10px' }}>
+                <div className="mt-2.5">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
                         disabled={currentPage === 1}
+                        className="p-2 border border-gray-300 bg-gray-100 cursor-pointer"
                     >
                         Previous
                     </button>
-                    <span style={{ margin: '0 10px' }}>
+                    <span className="mx-2.5">
                         Page {currentPage} of {totalPages}
                     </span>
                     <button
                         onClick={() => handlePageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
+                        className="p-2 border border-gray-300 bg-gray-100 cursor-pointer"
                     >
                         Next
                     </button>
