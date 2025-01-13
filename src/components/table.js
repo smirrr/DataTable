@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { tabledata } from '../data/mockTableData'; // Assuming you've moved your data to this file
-
+import { ArrowDownUp, ArrowUpNarrowWide, ArrowUpWideNarrow } from 'lucide-react';
 const DataTable = () => {
     const columns = tabledata.columns;
     const data = tabledata.data;
@@ -172,14 +172,7 @@ const DataTable = () => {
                         </div>
                         <button
                             onClick={toggleDialog}
-                            style={{
-                                marginTop: '10px',
-                                padding: '8px 12px',
-                                backgroundColor: '#f44336',
-                                color: 'white',
-                                border: 'none',
-                                cursor: 'pointer',
-                            }}
+                            className="mt-2 px-4 py-2 bg-red-500 text-white border-none cursor-pointer"
                         >
                             Close
                         </button>
@@ -206,13 +199,15 @@ const DataTable = () => {
                                             }}
                                         >
                                             {col.sortable ? (
-                                                <button
-                                                    style={{ cursor: 'pointer', padding: '5px' }}
-                                                    onClick={() => handleSort(col.name)}
-                                                >
+                                                <>
                                                     {col.name}
-                                                    {sortColumn === col.name && (sortDirection === 'asc' ? ' ↑' : ' ↓')}
-                                                </button>
+                                                    <button
+                                                        style={{ cursor: 'pointer', padding: '5px', border: 'none', background: 'transparent' }}
+                                                        onClick={() => handleSort(col.name)}
+                                                    >
+                                                        {sortColumn === col.name ? (sortDirection === 'asc' ? <ArrowUpNarrowWide size={16} color="blue" /> : <ArrowUpWideNarrow size={16} color="blue" />) : <ArrowDownUp size={16} color="blue" />}
+                                                    </button>
+                                                </>
                                             ) : (
                                                 col.name
                                             )}
