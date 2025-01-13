@@ -151,8 +151,8 @@ const DataTable = () => {
                 </div>
             )}
 
-            <div className="overflow-x-auto max-w-full">
-                <table className="table-auto w-full border-collapse border border-gray-300 text-sm">
+            <div className="overflow-x-auto max-w-full mx-auto scrollbar-thin scrollbar-thumb-blue-500 scrollbar-track-gray-200" style={{ width: '90%' }}>
+                <table className="table-auto w-full border-collapse border border-gray-300 text-sm text-gray-800">
                     <thead>
                         <tr>
                             {columns.map(
@@ -160,7 +160,7 @@ const DataTable = () => {
                                     (index === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                         <th
                                             key={index}
-                                            className={`min-w-[130px]  p-1 border border-gray-300 ${index === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
+                                            className={`min-w-[130px] p-1 border border-gray-300 ${index === 0 ? 'sticky left-0 z-10' : 'static bg-blue-100 text-gray-600'} bg-blue-100 text-gray-600`}
                                         >
                                             {col.sortable ? (
                                                 <>
@@ -169,7 +169,7 @@ const DataTable = () => {
                                                         className="cursor-pointer p-1 border-none bg-transparent"
                                                         onClick={() => handleSort(col.name)}
                                                     >
-                                                        {sortColumn === col.name ? (sortDirection === 'asc' ? <ArrowUpNarrowWide size={16} color="blue" /> : <ArrowUpWideNarrow size={16} color="blue" />) : <ArrowDownUp size={16} color="blue" />}
+                                                        {sortColumn === col.name ? (sortDirection === 'asc' ? <ArrowUpNarrowWide size={16} color="#5b5252" /> : <ArrowUpWideNarrow size={16} color="#5b5252" />) : <ArrowDownUp size={14} color="#5b5252" strokeWidth={2.5} />}
                                                     </button>
                                                 </>
                                             ) : (
@@ -188,7 +188,7 @@ const DataTable = () => {
                                         (colIndex === 0 || selectedColumns.find((column) => column.name === col.name && column.visible)) && (
                                             <td
                                                 key={colIndex}
-                                                className={` ${col.name === "Employee Name" ? 'min-w-[200px]' : 'min-w-[160px]'} p-1 border border-gray-300 ${colIndex === 0 ? 'sticky left-0 bg-white z-10' : 'static bg-transparent'}`}
+                                                className={`min-w-[160px] p-1 border border-gray-300  ${colIndex === 0 ? 'sticky left-0 z-10 bg-blue-100 min-w-[200px] pl-4' : 'static bg-transparent'} `}
                                             >
                                                 {col.name === "Employee Name" ? (
                                                     <div className="flex items-center">
@@ -208,9 +208,10 @@ const DataTable = () => {
                             </tr>
                         ))}
                     </tbody>
-
                 </table>
             </div>
+
+
 
             {/* Pagination controls */}
             <div className="mt-2.5">
