@@ -1,21 +1,19 @@
 import React, { useState } from 'react';
-import { tabledata } from '../data/mockTableData'; // Assuming you've moved your data to this file
+import { tabledata } from '../data/mockTableData'; 
 import { ArrowDownUp, ArrowUpNarrowWide, ArrowUpWideNarrow, CircleChevronLeft, CircleChevronRight, CircleX, X } from 'lucide-react';
 
 const DataTable = () => {
     const columns = tabledata.columns;
     const data = tabledata.data;
 
-    // State to manage pagination, sorting, and search
     const [currentPage, setCurrentPage] = useState(1);
     const [entriesPerPage, setEntriesPerPage] = useState(10);
-    const [sortColumn, setSortColumn] = useState(null); // Column to sort
-    const [sortDirection, setSortDirection] = useState('asc'); // Direction of sorting ('asc' or 'desc')
-    const [searchTerm, setSearchTerm] = useState(''); // Search term for filtering data
-    const [selectedColumns, setSelectedColumns] = useState(columns.map(col => ({ name: col.name, visible: true }))); // To manage visible columns
-    const [dialogOpen, setDialogOpen] = useState(false); // State to manage the visibility of the column selection dialog
+    const [sortColumn, setSortColumn] = useState(null); 
+    const [sortDirection, setSortDirection] = useState('asc'); 
+    const [searchTerm, setSearchTerm] = useState(''); 
+    const [selectedColumns, setSelectedColumns] = useState(columns.map(col => ({ name: col.name, visible: true })));
+    const [dialogOpen, setDialogOpen] = useState(false); 
 
-    // Filter the data based on Employee Name or Employee ID
     const filteredData = data.filter((row) => {
         const employeeName = row['Employee Name'].toLowerCase();
         const employeeId = String(row['Employee ID']);
@@ -26,7 +24,6 @@ const DataTable = () => {
         );
     });
 
-    // Sort the filtered data if a column is selected for sorting
     let sortedData = [...filteredData];
     if (sortColumn !== null) {
         sortedData = sortedData.sort((a, b) => {
@@ -38,43 +35,34 @@ const DataTable = () => {
         });
     }
 
-    // Calculate total pages after sorting and filtering
     const totalPages = Math.ceil(sortedData.length / entriesPerPage);
 
-    // Get the current page's data slice after sorting and filtering
     const startIndex = (currentPage - 1) * entriesPerPage;
     const currentPageData = sortedData.slice(startIndex, startIndex + entriesPerPage);
 
-    // Handle page change
     const handlePageChange = (page) => {
         setCurrentPage(page);
     };
 
-    // Handle entries per page change
     const handleEntriesPerPageChange = (event) => {
         setEntriesPerPage(Number(event.target.value));
-        setCurrentPage(1); // Reset to the first page when entries per page is changed
+        setCurrentPage(1); 
     };
 
-    // Handle column sorting
     const handleSort = (columnName) => {
         if (sortColumn === columnName) {
-            // Toggle sort direction if the same column is clicked
             setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
         } else {
-            // Set the column to sort by and default to ascending
             setSortColumn(columnName);
             setSortDirection('asc');
         }
     };
 
-    // Handle clear search
     const handleClearSearch = () => {
-        setSearchTerm(''); // Clear the search input
-        setCurrentPage(1); // Reset to the first page when search is cleared
+        setSearchTerm(''); 
+        setCurrentPage(1); 
     };
 
-    // Toggle column visibility
     const handleColumnToggle = (columnName) => {
         setSelectedColumns((prevColumns) =>
             prevColumns.map((col) =>
@@ -83,7 +71,6 @@ const DataTable = () => {
         );
     };
 
-    // Toggle the column selection dialog
     const toggleDialog = () => {
         setDialogOpen(!dialogOpen);
     };
@@ -97,19 +84,23 @@ const DataTable = () => {
         return colors[randomIndex];
     };
 
+    const handleSearch = (val) => {
+        setSearchTerm(val);
+        setCurrentPage(1);
+    }
+
     return (
         <>
             <h2 className="text-2xl font-bold text-[#00adf2] mt-8 w-[90%] mx-auto">Employee Table</h2>
             <hr className="border-t-1 border-blue-100 mb-8 w-[90%] mx-auto" />
 
-            {/* Search Bar and Dialog Button */}
             <div className="mb-2 flex items-center w-[90%] mx-auto">
                 <div className="relative flex items-center w-full max-w-[60%]">
                     <input
                         type="text"
                         placeholder="Search by Employee Name or ID"
                         value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onChange={(e) => handleSearch(e.target.value)}
                         className="p-2 w-full border border-gray-300 text-sm placeholder:text-sm focus:outline-none focus:ring-1 focus:ring-[#00adf2] rounded-md"
                     />
                     <button
@@ -129,12 +120,10 @@ const DataTable = () => {
             </div>
 
 
-            {/* Column Selection Dialog */}
             {dialogOpen && (
                 <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center z-50">
                     <div className="bg-white p-10 rounded-lg w-[450px] max-h-[600px] overflow-y-auto relative z-50">
                         <h3 className="absolute top-2 left-2 p-2 text-gray-600 font-bold">Select Columns to Display</h3>
-                        {/* Close button */}
                         <button
                             onClick={toggleDialog}
                             className="absolute top-2 right-2 p-2 text-white bg-transparent border-none cursor-pointer"
@@ -153,7 +142,6 @@ const DataTable = () => {
                                         className="w-4 h-4 text-[#00adf2] border-gray-300 mr-2 checked:bg-[#00adf2] checked:border-[#00adf2]"
                                     />
                                     <label className="text-md">{col.name}</label>
-                                    {/* Add a comma except for the last item */}
                                     {columns.slice(1).indexOf(col) !== columns.slice(1).length - 1 && <span className="mx-1">,</span>}
                                 </div>
                             ))}
@@ -205,10 +193,8 @@ const DataTable = () => {
                                                 {col.name === "Employee Name" ? (
                                                     <div className="flex items-center">
                                                         <div className={`w-8 h-8 flex items-center justify-center ${getRandomColor()} text-white rounded-full mr-2`}>
-                                                            {/* Display the first letter of the employee's name */}
                                                             {row['Employee Name'][0].toUpperCase()}
                                                         </div>
-                                                        {/* Display the full employee name */}
                                                         {row[col.name]}
                                                     </div>
                                                 ) : (
@@ -225,9 +211,7 @@ const DataTable = () => {
 
 
 
-            {/* Pagination controls */}
             <div className="my-2.5 flex justify-end items-center space-x-4 text-sm mr-20 text-gray-800 mb-20">
-                {/* Entries per page */}
                 <div>
                     <label htmlFor="entriesPerPage" className="mr-4">Entries per page:</label>
                     <select
@@ -242,7 +226,6 @@ const DataTable = () => {
                     </select>
                 </div>
 
-                {/* Pagination buttons */}
                 <div className="flex items-center space-x-2">
                     <button
                         onClick={() => handlePageChange(currentPage - 1)}
